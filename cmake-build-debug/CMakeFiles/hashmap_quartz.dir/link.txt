@@ -1,3 +1,0 @@
-"C:\Program Files\JetBrains\CLion 2021.2.1\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\hashmap_quartz.dir/objects.a
-C:\MinGW\bin\ar.exe cr CMakeFiles\hashmap_quartz.dir/objects.a @CMakeFiles\hashmap_quartz.dir\objects1.rsp
-C:\MinGW\bin\gcc.exe -g -Wl,--whole-archive CMakeFiles\hashmap_quartz.dir/objects.a -Wl,--no-whole-archive -o hashmap_quartz.exe -Wl,--out-implib,libhashmap_quartz.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\hashmap_quartz.dir\linklibs.rsp
