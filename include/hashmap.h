@@ -255,8 +255,10 @@ static int hashmap_extend(HashMap *map)
 
         size_t index = get_index(map, elem->key);
         map->table[index] = elem;
-        pflush_n(&(map->table[index]), sizeof(struct DictEntry));
-        asm_mfence();
+        if (WITH_QUARTZ){
+            pflush_n(&(map->table[index]), sizeof(struct DictEntry));
+            asm_mfence();
+        }
     }
     if(WITH_QUARTZ)
         pfree(old_table, old_capacity * sizeof(struct DictElem *));
@@ -314,8 +316,10 @@ int hashmap_insert(HashMap *map, int key, int value)
     if (e)
     {
         e->value = value;
-        pflush_n(e, sizeof(struct DictEntry));
-        asm_mfence();
+        if (WITH_QUARTZ){
+            pflush_n(e, sizeof(struct DictEntry));
+            asm_mfence();
+        }
     }
     else
     {
@@ -334,18 +338,24 @@ int hashmap_insert(HashMap *map, int key, int value)
         new->hash = inthash(key);
         new->key = key;
         new->value = value;
-        pflush_n(new, sizeof(struct DictEntry));
-        asm_mfence();
+        if (WITH_QUARTZ){
+            pflush_n(new, sizeof(struct DictEntry));
+            asm_mfence();
+        }
 
         size_t index = get_index(map, key);
         
         map->table[index] = new;
-        pflush_n(&(map->table[index]), sizeof(struct DictEntry));
-        asm_mfence();
+        if (WITH_QUARTZ){
+            pflush_n(&(map->table[index]), sizeof(struct DictEntry));
+            asm_mfence();
+        }
         
         map->size++;
-        pflush(&(map->size));
-        asm_mfence();
+        if (WITH_QUARTZ){
+            pflush(&(map->size));
+            asm_mfence();
+        }
 
     }
     return 0;
