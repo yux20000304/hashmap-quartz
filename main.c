@@ -5,7 +5,7 @@ int main(void)
 {
     HashMap *hm = new_hashmap();
 
-    for (int i = 0, j = 100; i < 100; i++, j--)
+    for (int i = 0, j = 10000; i < 10000; i++, j--)
     {
         if (hashmap_insert(hm, i, j))
         {
@@ -13,7 +13,7 @@ int main(void)
         }
     }
 
-    for (int i = 25; i < 75; i++)
+    for (int i = 2500; i < 7500; i++)
     {
         if (hashmap_remove(hm, i))
         {
@@ -22,13 +22,14 @@ int main(void)
     }
 
     int res = 0;
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 10000; i++)
     {
         int err = hashmap_get(hm, i, &res);
-        printf("%d:%d\n", i, err ? -69 : res);
+        printf("%d:%d\n", i, err ? -1 : res);
         res = 0;
     }
 
     destroy_hashmap(hm);
     return 0;
 }
+
