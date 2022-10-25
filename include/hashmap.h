@@ -1,5 +1,5 @@
 //
-// Created by yyx on 2022/10/24.
+// Created by admin on 2022/10/24.
 //
 
 #ifndef HASHMAP_QUARTZ_HASHMAP_H
@@ -32,7 +32,7 @@ int hashmap_remove(HashMap *map, int key);
 int hashmap_get(HashMap *map, int key, int *result);
 void pflush_n(void *addr, size_t size);
 
-#define DEFAULT_CAP 7
+#define DEFAULT_CAP 100000
 
 struct DictEntry
 {
@@ -198,11 +198,10 @@ ERR:
 void destroy_hashmap(HashMap *map)
 {
     destroy_table(map->table, map->capacity);
-#ifdef WITH_QUARTZ
-    pfree(map, sizeof(HashMap));
-#else
-    free(map);
-#endif
+    if(WITH_QUARTZ)
+        pfree(map, sizeof(HashMap));
+    else
+        free(map);
 }
 
 /* TODO: If the hashmap is full (somehow) this will never return */
@@ -256,12 +255,13 @@ static int hashmap_extend(HashMap *map)
 
         size_t index = get_index(map, elem->key);
         map->table[index] = elem;
+        pflush_n(&(map->table[index]), sizeof(struct DictEntry));
+        asm_mfence();
     }
-#ifdef WITH_QUARTZ
-    pfree(old_table, old_capacity * sizeof(struct DictElem *));
-#else
-    free(old_table);
-#endif
+    if(WITH_QUARTZ)
+        pfree(old_table, old_capacity * sizeof(struct DictElem *));
+    else
+        free(old_table);
     return 0;
 }
 
