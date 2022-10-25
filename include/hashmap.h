@@ -186,13 +186,11 @@ HashMap *new_hashmap(void)
     return new;
 
 ERR:
-    if (new)
-    {
-#ifdef WITH_QUARTZ
-        pfree(new, sizeof(HashMap));
-#else
-        free(new);
-#endif
+    if (new){
+        if(WITH_QUARTZ)
+            pfree(new, sizeof(HashMap));
+        else
+            free(new);
     }
     return NULL;
 }
@@ -424,3 +422,4 @@ void pflush_n(void *addr, size_t size)
 }
 
 #endif // HASHMAP_QUARTZ_HASHMAP_H
+
